@@ -1,0 +1,7 @@
+/vendor/
+composer.lock
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
