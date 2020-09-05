@@ -1,0 +1,27 @@
+{
+  "name": "qinchen/web-utils",
+  "description": "A web application common utils",
+  "homepage": "https://github.com/ChenJinchuang/web-utils",
+  "keywords": [
+    "php",
+    "web",
+    "token"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Chenjinchuang",
+      "email": "qinchenju@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "firebase/php-jwt": "^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "qinchen\\": "src"
+    }
+  }
+}
