@@ -1,5 +1,11 @@
 # web-utils
-A web application common utils
+A web application common utils.
+
+## Installation
+
+```
+composer require qinchen/web-utils
+```
 
 ## List
 

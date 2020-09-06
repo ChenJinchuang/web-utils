@@ -46,7 +46,7 @@ class Token
     public static function refresh(string $token, TokenConfig $tokenConfig): array
     {
         $tokenPayload = self::verifyToken($token, 'refresh', $tokenConfig);
-        $tokenPayload['exp'] = $tokenConfig->getAccessExp();
+        $tokenPayload['exp'] = $tokenPayload['exp'] + $tokenConfig->getAccessExp();
         $token = self::generateToken($tokenPayload, $tokenConfig->getAccessSecretKey(), $tokenConfig->getAlgorithms());
         return [
             'accessToken' => $token

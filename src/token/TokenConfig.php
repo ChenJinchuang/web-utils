@@ -12,40 +12,41 @@ namespace qinchen\token;
 class TokenConfig
 {
     /**
-     * @var bool
+     * @var bool 是否开启双令牌模式
      */
     private $dualToken;
     /**
-     * @var string
+     * @var string access令牌秘钥
      */
     private $accessSecretKey;
     /**
-     * @var string
+     * @var string refresh令牌秘钥
      */
     private $refreshSecretKey;
     /**
-     * @var string
+     * @var string 算法类型，支持：
+     * ES256、HS256、HS384、HS512、RS256、RS384、RS512
      */
     private $algorithms;
     /**
-     * @var string
+     * @var string 令牌签发者
      */
     private $iss;
     /**
-     * @var int
+     * @var int 令牌签发时间
      */
     private $iat;
     /**
-     * @var int
+     * @var int access令牌过期时间，单位秒
      */
     private $accessExp;
 
     /**
-     * @var int
+     * @var int refresh令牌过期时间，单位秒
      */
     private $refreshExp;
     /**
-     * @var array
+     * @var array 令牌内容扩展字段，用于存放自定义信息
      */
     private $extend;
 
@@ -123,8 +124,8 @@ class TokenConfig
     }
 
     /**
-     * 是否生成双令牌
-     * @param bool $dualToken
+     * 设置令牌模式
+     * @param bool $dualToken true：双令牌;false: 单令牌模式
      * @return TokenConfig
      */
     public function dualToken(bool $dualToken): TokenConfig
@@ -134,8 +135,8 @@ class TokenConfig
     }
 
     /**
-     * 令牌秘钥
-     * @param string $accessSecretKey
+     * 设置access令牌秘钥
+     * @param string $accessSecretKey 随机字符串，用于加解密
      * @return TokenConfig
      */
     public function setAccessSecretKey(string $accessSecretKey): TokenConfig
@@ -145,8 +146,8 @@ class TokenConfig
     }
 
     /**
-     * 令牌秘钥，仅开启双令牌下需设置
-     * @param string $refreshSecretKey
+     * 设置refresh令牌秘钥，仅开启双令牌下需设置
+     * @param string $refreshSecretKey 随机字符串，用于加解密
      * @return TokenConfig
      */
     public function setRefreshSecretKey(string $refreshSecretKey): TokenConfig
@@ -157,8 +158,8 @@ class TokenConfig
     }
 
     /**
-     * 加密算法类型
-     * @param string $algorithms
+     * 设置加密算法类型
+     * @param string $algorithms 支持：ES256、HS256、HS384、HS512、RS256、RS384、RS512
      * @return TokenConfig
      */
     public function setAlgorithms(string $algorithms): TokenConfig
@@ -169,7 +170,7 @@ class TokenConfig
     }
 
     /**
-     * 令牌签发者
+     * 设置令牌签发者
      * @param string $iss
      * @return TokenConfig
      */
@@ -181,8 +182,8 @@ class TokenConfig
     }
 
     /**
-     * 签发时间
-     * @param int $iat
+     * 设置签发时间
+     * @param int $iat 签发时的时间戳
      * @return TokenConfig
      */
     public function setIat(int $iat): TokenConfig
@@ -192,8 +193,8 @@ class TokenConfig
     }
 
     /**
-     * Access令牌过期时间
-     * @param int $accessExp
+     * 设置Access令牌过期时间
+     * @param int $accessExp 令牌过期时间，单位秒
      * @return TokenConfig
      */
     public function setAccessExp(int $accessExp): TokenConfig
@@ -204,7 +205,7 @@ class TokenConfig
 
     /**
      * Refresh令牌过期时间，仅开启双令牌下需设置
-     * @param int $refreshExp
+     * @param int $refreshExp 令牌过期时间，单位秒
      * @return TokenConfig
      */
     public function setRefreshExp(int $refreshExp): TokenConfig
@@ -216,7 +217,7 @@ class TokenConfig
 
     /**
      * 设置令牌扩展字段内容
-     * @param array $extend
+     * @param array $extend 自定义内容
      * @return TokenConfig
      */
     public function setExtend(array $extend): TokenConfig
@@ -226,14 +227,19 @@ class TokenConfig
     }
 
     /**
+     * 参数检查
      * @return bool
      * @throws \Exception
      */
     public function checkParams(): bool
     {
+        if ((empty($this->refreshSecretKey) || empty($this->refreshExp)) && $this->dualToken) {
+            throw new \Exception("双令牌模式下refreshExp和refreshSecretKey属性不能为空");
+        }
+
         $objectVars = get_object_vars($this);
         foreach ($objectVars as $key => $value) {
-            if ($key !== 'extend' && is_null($value)) {
+            if ($key !== 'extend' && $key !== 'refreshExp' && $key !== 'refreshSecretKey' && is_null($value)) {
                 throw new \Exception("令牌参数{$key}未配置");
             }
         }
