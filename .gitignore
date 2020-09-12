@@ -5,3 +5,4 @@ composer.lock
 *.iws
 .idea/
 out/
+.phpunit.result.cache
