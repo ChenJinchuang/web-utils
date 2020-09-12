@@ -17,7 +17,10 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "firebase/php-jwt": "^5.0"
+    "firebase/php-jwt": "^5.0",
+    "qcloud/cos-sdk-v5": ">=2.0",
+    "aliyuncs/oss-sdk-php": "^2.4.0",
+    "phpunit/phpunit": "^9.3"
   },
   "autoload": {
     "psr-4": {
