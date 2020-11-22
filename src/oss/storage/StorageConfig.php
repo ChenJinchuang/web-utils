@@ -22,24 +22,32 @@ class StorageConfig
 
 
     /**
+     * StorageConfig constructor.
+     * @param string $appId 云 API 密钥，请到相应云存储平台的控制台获取
+     * 腾讯云为SecretId
+     * 阿里云为AccessKeyId
+     * 七牛云为AccessKeY
+     *
+     * @param string $appKey 云 API 密钥，请到相应云存储平台的控制台获取
+     * 腾讯云为SecretKey
+     * 阿里云为AccessKeySecret
+     * 七牛云为SecretKey
+     *
+     * @param string $region 存储区域
+     */
+    public function __construct(string $appId, string $appKey, string $region)
+    {
+        $this->appId = $appId;
+        $this->appKey = $appKey;
+        $this->region = $region;
+    }
+
+    /**
      * @return string
      */
     public function getAppId(): string
     {
         return $this->appId;
-    }
-
-    /**
-     * 云 API 密钥，请到相应云存储平台的控制台获取
-     * 腾讯云为SecretId
-     * 阿里云为AccessKeyId
-     * @param string $appId
-     * @return StorageConfig
-     */
-    public function setAppId(string $appId): StorageConfig
-    {
-        $this->appId = $appId;
-        return $this;
     }
 
     /**
@@ -51,35 +59,11 @@ class StorageConfig
     }
 
     /**
-     * 云 API 密钥，请到相应云存储平台的控制台获取
-     * 腾讯云SecretKey
-     * 阿里云为AccessKeySecret
-     * @param string $appKey
-     * @return StorageConfig
-     */
-    public function setAppKey(string $appKey): StorageConfig
-    {
-        $this->appKey = $appKey;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getRegion(): string
     {
         return $this->region;
-    }
-
-    /**
-     * 设置使用的存储桶名称
-     * @param string $region
-     * @return StorageConfig
-     */
-    public function setRegion(string $region): StorageConfig
-    {
-        $this->region = $region;
-        return $this;
     }
 
     /**

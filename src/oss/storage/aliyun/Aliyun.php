@@ -61,15 +61,17 @@ class Aliyun implements ICloudStorage
      * @param int $limit 查询条目数
      * @param string $delimiter 要分隔符分组结果
      * @param string $prefix 指定key前缀查询
+     * @param string $marker
      * @return ObjectListInfo
      * @throws OssException
      */
-    public function get(int $limit, string $delimiter = '', string $prefix = '')
+    public function get(int $limit, string $delimiter = '', string $prefix = '', string $marker = '')
     {
         $options = [
             'delimiter' => $delimiter,
             'prefix' => $prefix,
             'max-keys' => $limit,
+            'marker' => $marker,
         ];
         return $this->ossClient->listObjects($this->bucket, $options);
     }
@@ -77,31 +79,35 @@ class Aliyun implements ICloudStorage
     /**
      * 单文件上传
      * @param string $key 指定唯一的文件key
-     * @param string $content 字符串内容或包含扩展名的文件完整本地路径
+     * @param string $path 字符串内容或包含扩展名的文件完整本地路径
      * @return PutResponse
-     * @throws OssException
+     * @throws OssException|ConfigException
      */
-    public function put(string $key, $content): PutResponse
+    public function put(string $key, string $path): PutResponse
     {
-        $ossRes = $this->ossClient->uploadFile($this->bucket, $key, $content);
+        if (!is_file($path)) {
+            throw new ConfigException("Parameter 2 must be a valid file path");
+        }
+
+        $ossRes = $this->ossClient->uploadFile($this->bucket, $key, $path);
         return new PutResponse($key, $ossRes);
     }
 
     /**
      * 分块文件上传
      * @param string $key 指定唯一的文件key
-     * @param string $content 字符串内容或包含扩展名的文件完整本地路径
-     * @param int $partSize 指定块大小
+     * @param string $path 字符串内容或包含扩展名的文件完整本地路径
+     * @param int|null $partSize 指定块大小
      * @return PutResponse
      * @throws OssException
      */
-    public function putPart(string $key, $content, int $partSize = 10 * 1024 * 1024): PutResponse
+    public function putPart(string $key, string $path, int $partSize = null): PutResponse
     {
         $options = array(
             OssClient::OSS_CHECK_MD5 => true,
-            OssClient::OSS_PART_SIZE => $partSize,
+            OssClient::OSS_PART_SIZE => $partSize ?: 10 * 1024 * 1024,
         );
-        $multiuploadFile = $this->ossClient->multiuploadFile($this->bucket, $key, $content, $options);
+        $multiuploadFile = $this->ossClient->multiuploadFile($this->bucket, $key, $path, $options);
 
         return new PutResponse($key, $multiuploadFile);
     }
