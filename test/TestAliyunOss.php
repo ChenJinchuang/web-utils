@@ -20,14 +20,10 @@ class TestAliyunOss extends PHPUnit\Framework\TestCase
 
     private function init()
     {
-        $config = (new StorageConfig())
-            ->setAppId("")
-            ->setAppKey("")
-            ->setRegion("");
-
+        $config = new StorageConfig("控制台查看获取", "控制台查看获取", "控制台查看获取");
         $this->storage = Manager::storage("aliyun")
             ->init($config)
-            ->bucket("");
+            ->bucket("存储桶名称");
     }
 
     /**
@@ -48,7 +44,7 @@ class TestAliyunOss extends PHPUnit\Framework\TestCase
     public function put()
     {
         $this->init();
-        $path = "";
+        $path = "字符串内容或带扩展名的完整文件路径";
         $result = $this->storage->put("test.jpg", $path);
         $this->assertIsObject($result);
     }
@@ -60,7 +56,7 @@ class TestAliyunOss extends PHPUnit\Framework\TestCase
     public function putPart()
     {
         $this->init();
-        $path = "";
+        $path = "字符串内容或带扩展名的完整文件路径";
         $result = $this->storage->putPart("test.jpg", $path);
         $this->assertIsObject($result);
     }
@@ -73,6 +69,6 @@ class TestAliyunOss extends PHPUnit\Framework\TestCase
         $this->init();
         $keys = ['test.jpg'];
         $responseCore = $this->storage->delete($keys);
-        $this->assertIsArray($responseCore);
+        $this->assertIsObject($responseCore);
     }
 }

@@ -65,15 +65,17 @@ class Tencent implements ICloudStorage
      * @param int $limit 查询条目数
      * @param string $delimiter 要分隔符分组结果
      * @param string $prefix 指定key前缀查询
+     * @param string $marker 标明本次列举文件的起点
      * @return mixed
      */
-    public function get(int $limit, string $delimiter = '', string $prefix = '')
+    public function get(int $limit, string $delimiter = '', string $prefix = '', string $marker = '')
     {
         $options = [
             'Bucket' => $this->bucket,
             'Delimiter' => $delimiter,
             'Prefix' => $prefix,
             'MaxKeys' => $limit,
+            'Marker' => $marker,
         ];
         return $this->ossClient->listObjects($options);
     }
@@ -81,25 +83,33 @@ class Tencent implements ICloudStorage
     /**
      * 单文件上传
      * @param string $key 指定唯一的文件key
-     * @param resource $body 上传内容
+     * @param string $path 上传内容
      * @return PutResponse
+     * @throws ConfigException
      */
-    public function put(string $key, $body): PutResponse
+    public function put(string $key, string $path): PutResponse
     {
-        $ossRes = $this->ossClient->upload($this->bucket, $key, $body);
+        if (!is_file($path)) {
+            throw new ConfigException("Parameter 2 must be a valid file path");
+        }
+
+        $file = fopen($path, 'rb');
+
+        $ossRes = $this->ossClient->upload($this->bucket, $key, $file);
         return new PutResponse($key, $ossRes);
     }
 
     /**
      * 分块文件上传
      * @param string $key 指定唯一的文件key
-     * @param resource $body 上传内容
+     * @param string $path 上传内容
      * @param int|null $partSize 指定块大小
      * @return PutResponse
+     * @throws ConfigException
      */
-    public function putPart(string $key, $body, int $partSize = null): PutResponse
+    public function putPart(string $key, string $path, int $partSize = null): PutResponse
     {
-        return $this->put($key, $body);
+        return $this->put($key, $path);
     }
 
     /**

@@ -33,26 +33,27 @@ interface ICloudStorage
      * @param int $limit 查询条目数
      * @param string $delimiter 要分隔符分组结果
      * @param string $prefix 指定key前缀查询
+     * @param string $marker 标明本次列举文件的起点
      * @return mixed
      */
-    public function get(int $limit, string $delimiter = '', string $prefix = '');
+    public function get(int $limit, string $delimiter = '', string $prefix = '', string $marker = '');
 
     /**
      * 单文件上传
      * @param string $key 指定唯一的文件key
-     * @param string|resource $body 上传内容
+     * @param string $path 包含扩展名的完整文件路径
      * @return PutResponse
      */
-    public function put(string $key, $body): PutResponse;
+    public function put(string $key, string $path): PutResponse;
 
     /**
      * 分块文件上传
      * @param string $key 指定唯一的文件key
-     * @param resource $body 上传内容
-     * @param int $partSize 指定块大小
+     * @param string $path 包含扩展名的完整文件路径
+     * @param int|null $partSize 指定块大小
      * @return PutResponse
      */
-    public function putPart(string $key, $body, int $partSize): PutResponse;
+    public function putPart(string $key, string $path, int $partSize = null): PutResponse;
 
     /**
      * 删除指定key的文件

@@ -1,9 +1,8 @@
 <?php
 
-use qinchen\oss\exception\ConfigException;
 use qinchen\oss\Manager;
+use qinchen\oss\storage\qiniu\Qiniu;
 use qinchen\oss\storage\StorageConfig;
-use qinchen\oss\storage\tencent\Tencent;
 
 /**
  * Created by PhpStorm
@@ -11,18 +10,17 @@ use qinchen\oss\storage\tencent\Tencent;
  * Date: 2020/9/12
  * Time: 1:10 上午
  */
-class TestTencentOss extends PHPUnit\Framework\TestCase
+class TestQiniuOss extends PHPUnit\Framework\TestCase
 {
     /**
-     * @var Tencent
+     * @var Qiniu
      */
     private $storage;
 
-
     private function init()
     {
-        $config = new StorageConfig("控制台查看获取", "控制台查看获取", "控制台查看获取");
-        $this->storage = Manager::storage("tencent")
+        $config = new StorageConfig("控制台查看获取", "控制台查看获取", "七牛云不需要配置这个参数，留空字符串");
+        $this->storage = Manager::storage("qiniu")
             ->init($config)
             ->bucket("存储桶名称");
     }
@@ -34,30 +32,27 @@ class TestTencentOss extends PHPUnit\Framework\TestCase
     {
         $this->init();
         $objectListInfo = $this->storage->get(10);
-        $this->assertIsObject($objectListInfo, $objectListInfo);
+        $this->assertIsArray($objectListInfo);
     }
 
     /**
      * @test
-     * @throws ConfigException
      */
     public function put()
     {
-        $path = "带扩展名的完整文件路径";
         $this->init();
+        $path = "带扩展名的完整文件路径";
         $result = $this->storage->put("test.jpg", $path);
         $this->assertIsObject($result);
     }
 
     /**
      * @test
-     * @throws ConfigException
      */
     public function putPart()
     {
-        $path = "带扩展名的完整文件路径";
-
         $this->init();
+        $path = "带扩展名的完整文件路径";
         $result = $this->storage->putPart("test.jpg", $path);
         $this->assertIsObject($result);
     }
@@ -67,10 +62,9 @@ class TestTencentOss extends PHPUnit\Framework\TestCase
      */
     public function delete()
     {
-        $keys = ['test.jpg'];
         $this->init();
-        $delete = $this->storage->delete($keys);
-        $this->assertIsObject($delete);
+        $keys = ['test.jpg'];
+        $responseCore = $this->storage->delete($keys);
+        $this->assertIsObject($responseCore);
     }
-
 }
