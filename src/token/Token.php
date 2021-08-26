@@ -71,7 +71,7 @@ class Token
         return $jwt = (array)JWT::decode($token, $secretKey, array($tokenConfig->getAlgorithms()));
     }
 
-    private static function generateToken(array $payload, string $secretKey, string $algorithms)
+    private static function generateToken(array $payload, string $secretKey, string $algorithms): string
     {
         return JWT::encode($payload, $secretKey, $algorithms);
     }
@@ -81,7 +81,7 @@ class Token
      * @return array[]
      * @throws \Exception
      */
-    private static function generatePayload(TokenConfig $tokenConfig)
+    private static function generatePayload(TokenConfig $tokenConfig): array
     {
         $tokenConfig->checkParams();
 
